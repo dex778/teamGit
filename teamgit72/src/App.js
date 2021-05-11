@@ -4,6 +4,8 @@ import './App.css';
 
 import Weather from './components/Weather'
 import Location from './components/Location'
+import Nasa from './components/Nasa'
+
 
 
 
@@ -19,7 +21,7 @@ function App() {
       <Location location={location} setLocation={setLocation} />
       {location?.longitude}
       {location?.latitude}
-      
+      <Nasa />
       <Weather location={location}/>
       
     </div>
