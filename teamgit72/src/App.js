@@ -1,32 +1,27 @@
-import React, {useState} from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
+import React, { useState, useEffect} from 'react';
 import './App.css';
-
-import Weather from './components/Weather'
+import Navbar from './components/Navbar'
 import Location from './components/Location'
 import Nasa from './components/Nasa'
-
-
-
-
-
-// Defining our <App /> component the function name matches the file name
+import Weather from './components/Weather'
 function App() {
-  // All functional components need to return jsx with one parent element
-  // The location comp will set location data for our api calls, location is an
-  // object with {longitude:?, latitude:?}
-  const [location, setLocation] = useState()
-  return ( 
+  const [latitude, setLatitude] = useState()
+  const [longitude, setLongitude] = useState()
+  useEffect(()=>{
+    navigator.geolocation.getCurrentPosition((position) => {
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+    })
+  },[])
+
+
+  return (
     <div className="App">
-      <Location location={location} setLocation={setLocation} />
-      {location?.longitude}
-      {location?.latitude}
-      <Nasa />
-      <Weather location={location}/>
-      
+      <Navbar />
+      <Nasa lon={longitude} lat={latitude} />
+      <Location />
+      <Weather />
     </div>
   );
 }
-
-// Makes our Component available for import
 export default App;
