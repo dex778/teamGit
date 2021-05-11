@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const key ='2d4e8af8fa1dda677bedfb6c84f23700'
+
 const Weather = () => {
     const [results, setResults] = useState('');
     const [description, setDescription] = useState('');
