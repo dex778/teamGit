@@ -1,39 +1,42 @@
-import React, { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 
 
-const key = 'VCgAOyrgEClw3lBf7jhqldaehMPVmFSjU5cSFNmV'
+const Nasa = (props) => {
+    const [locimage, setLocImage] = useState();
+    const initData = useCallback(() => {
+        const latInt = Math.trunc(props.lat);
+        const lonInt = Math.trunc(props.lon);
+        const key="LmTMbJEt8zJQOqAl6HD4NWdLBQ9mIOWvHc44GtLN"
+        const builtUrl = `https://api.nasa.gov/planetary/earth/assets?lon=${lonInt}&lat=${latInt}&date=2018-01-01&&dim=0.15&api_key=${key}`;
+        fetch(builtUrl)
+           .then(res => res.json())
+           .then(res => {
+               console.log(res.url);
+               setLocImage(res.url);
+            })
+           .catch(err => console.log(err))
+    }, [props.lon, props.lat])
+   useEffect(() => {
+        if (props.lat && props.lon){
+            initData()
+        }
+   },[props.lat, props.lon, initData])
+    return (
+        <div className="card">
+            <h1>Nasa Image of Your Location</h1>
+            <div>
+            {
+                locimage && <img className="locationImage"
+                src={locimage}
+                alt="img"/>
+               
+            }
+            </div>
+        </div>
+    )
+}
 
-const Nasa = () => {
-
-    useEffect (()=>{
-        navigator.geolocation.getCurrentPosition((position) => {
-            let lat = position.coords.latitude;
-            let long = position.coords.longitude;
-
-            fetch(
-            //    ` api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}`
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=imperial`
-              )
-                .then((response) => response.json())
-                .then((data) => {
-                  console.log(data);
-                 
-                  })
-                });
-        })
-      
 
 
-
-
-    
-    
-  return (
-    <div>
-        
-    </div> 
-
-  );
-};
-
+// Makes it available for import
 export default Nasa;
