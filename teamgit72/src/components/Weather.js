@@ -1,114 +1,39 @@
-import React, {useState, useEffect} from "react";
-// const lat = "39.9679389";
-// const long = "-86.12427819999999";
+import React, { useState } from 'react';
 
-const key = "d7ae70b412dfeecd253828278594b5e3";
+const key ='2d4e8af8fa1dda677bedfb6c84f23700'
 
 const Weather = () => {
-    const [city, setCity] = useState("");
-    const [country, setCountry] = useState("");
-    const [icon, setIcon] = useState("");
-    const [description, setDescription] = useState("");
-    const [temperature, setTemperature] = useState("");
-    const [degrees, setDegrees] = useState("");
-    const [button, setButton] = useState("");
-    const [wind, setWind] = useState("");
-    const [clouds, setClouds] = useState("");
-
-    useEffect (()=>{
-        navigator.geolocation.getCurrentPosition((position) => {
-            let lat = position.coords.latitude;
-            let long = position.coords.longitude;
-
-            fetch(
-            //    ` api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}`
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=imperial`
-              )
-                .then((response) => response.json())
-                .then((data) => {
-                  console.log(data);
-                  if (data.cod === 200) {
-                      setCity(data.name); 
-                      setCountry(data.sys.country); 
-                      setIcon(data.weather[0].icon); 
-                      setDescription(data.weather[0].description); 
-                      setTemperature(data.main.temp); 
-                      setDegrees("°F"); 
-                      setButton("°C / °F")
-                      setWind(data.wind.speed); 
-                      setClouds(data.clouds.all); 
-                  }
-                });
-        })
-      
-
-
-
-
-    },[])
-    const toFahrenheit = () => {
-        let result = temperature *1.8 + 32; 
-        return result.toFixed(2); 
-    }; 
-
-    const toCelcius = () => {
-        let result = (temperature - 32) * 0.5556; 
-        return result.toFixed(2); 
-    }; 
-
-    const handleClick = () => {
-        setButton("°F/°C" ); 
-        if (degrees==="°C") {
-            let farenheit = toFahrenheit(); 
-            setTemperature(farenheit); 
-            setDegrees("°F"); 
-        }else if (degrees ==="°F") {
-            let celcius = toCelcius(); 
-            setTemperature(celcius); 
-            setDegrees("°C"); 
-            setButton("°C/°F"); 
-
-        }
-
-        }
-    
-    
-  return (
-    <div>
-        <div className="row mb-3">
-            <div className="col-12">
-                <img 
-                src={`http://openweathermap.org/img/wn/${icon}@2x.png`}
-                alt="weather img"
-            />
+    const [results, setResults] = useState('');
+    const [description, setDescription] = useState('');
+    const [unit, setUnit] = useState('imperial');
+    const fetchResults = () => {
+        let url = `https://api.openweathermap.org/data/2.5/weather?lat=41.0748313&lon=-85.3032709&appid=2d4e8af8fa1dda677bedfb6c84f23700&units=${unit}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                setResults(Math.round(data.main.temp))
+                setDescription(data.weather[0].description)
+                console.log(data)
+            })
+            .catch(err => console.log(err))
+    };
+    const toggleUnit = () => {
+        unit === 'imperial' ? setUnit('metric') : setUnit('imperial');
+    }
+    fetchResults();
+    return (
+        <div className="weather">
+            <div>
+                <h1>Your Local Weather</h1>
+                <p>It is currently {results} degrees with {description}</p>
+                <button onClick={toggleUnit}>Click for Fahrenheit/Celsius</button>
+            </div>
         </div>
-        <div className="col-12 text-justify">
-            <h2>
-                {city}, {country}
-            </h2>
-            <p>
-                <b>Current condition:</b> '{description}'
-            </p>
-            <p>
-                <b> Temperature:</b>
-                {temperature} {degrees}
-            </p>
-            <p>
-                <b> Wind Speed:</b>
-                {wind}
-            </p>
-            <p>
-                <b> Clouds:</b>
-                {clouds}
-            </p>
-        </div>
-    </div>
-    <button className="btn btn-primary mb-2" onClick={handleClick}>
-        {button}
-    </button>
-</div> 
-
-  );
+    );
 };
+
+
+
+
 export default Weather;
 
